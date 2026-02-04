@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 50%, #ffd4e8 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Floating hearts background */
+        .heart-bg {
+            position: fixed;
+            font-size: 20px;
+            color: rgba(255, 182, 193, 0.6);
+            animation: float 15s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 30px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ff4d94;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .question {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .name-input {
+            font-size: 1.8em;
+            color: #ff4d94;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+            position: relative;
+            min-height: 60px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff4d94 100%);
+            color: white;
+            position: relative;
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(255, 77, 148, 0.4);
+        }
+
+        .btn-no {
+            background: linear-gradient(135deg, #e0e0e0 0%, #bdbdbd 100%);
+            color: #666;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .btn-no.running {
+            position: fixed;
+        }
+
+        .confirmation {
+            display: none;
+            font-size: 1.5em;
+            color: #ff4d94;
+            margin: 20px 0;
+            font-weight: bold;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .flowers-container {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .flower {
+            font-size: 3em;
+            display: inline-block;
+            margin: 10px;
+            animation: bloom 1s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes bloom {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(0deg);
+            }
+            50% {
+                transform: scale(1.2) rotate(180deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(360deg);
+            }
+        }
+
+        .final-message {
+            display: none;
+            font-size: 1.5em;
+            color: #ff4d94;
+            margin-top: 20px;
+            animation: fadeIn 1s ease;
+        }
+
+        .photo-frame {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff4d94 100%);
+            padding: 5px;
+            box-shadow: 0 10px 30px rgba(255, 77, 148, 0.3);
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+        }
+
+        .celebration {
+            display: none;
+            font-size: 5em;
+            margin: 20px 0;
+            animation: bounce 0.5s ease infinite alternate;
+        }
+
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Music control button */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 77, 148, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 77, 148, 0.4);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .music-control:hover {
+            transform: scale(1.1);
+        }
+
+        .music-note {
+            position: fixed;
+            font-size: 20px;
+            animation: floatMusic 3s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        @keyframes floatMusic {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-30px) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        /* Click to start overlay */
+        .start-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 77, 148, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            cursor: pointer;
+        }
+
+        .start-overlay h2 {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .start-overlay p {
+            color: white;
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+
+        .start-overlay.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Click to Start Overlay -->
+    <div class="start-overlay" id="startOverlay" onclick="startExperience()">
+        <h2>💕 Click to Start 💕</h2>
+        <p>Tap anywhere to begin</p>
+    </div>
+
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+        <source src="https://j.wejfknwejfkerf.org/dl.php?id=34fc2f5820bdad5e0525297f16130974" type="audio/mpeg">
+    </audio>
+
+    <!-- Music Control Button -->
+    <button class="music-control" id="musicToggle" onclick="toggleMusic()">🔊</button>
+
+    <!-- Background floating hearts -->
+    <script>
+        for (let i = 0; i < 15; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart-bg';
+            heart.textContent = '💕';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 15 + 's';
+            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            document.body.appendChild(heart);
+        }
+
+        // Create floating music notes
+        for (let i = 0; i < 8; i++) {
+            const note = document.createElement('div');
+            note.className = 'music-note';
+            note.textContent = ['🎵', '🎶', '♪', '♫'][Math.floor(Math.random() * 4)];
+            note.style.left = Math.random() * 100 + '%';
+            note.style.top = Math.random() * 100 + '%';
+            note.style.animationDelay = Math.random() * 3 + 's';
+            document.body.appendChild(note);
+        }
+    </script>
+
+    <div class="container">
+        <div class="photo-frame">
+            <div class="photo-placeholder">💝</div>
+        </div>
+        
+        <h1>Will you be my Valentine?</h1>
+        
+        <div class="question">
+            I am asking you to be my Valentine this February 14.
+        </div>
+
+        <div class="buttons" id="mainButtons">
+            <button class="btn-yes" onclick="sayYes()">YES</button>
+            <button class="btn-no" id="noButton" onclick="handleNoClick(event)">NO</button>
+        </div>
+
+        <div class="confirmation" id="confirmation"></div>
+        <div class="celebration" id="celebration"></div>
+        <div class="flowers-container" id="flowers"></div>
+        <div class="final-message" id="finalMessage"></div>
+    </div>
+
+    <script>
+        // Music control
+        let musicPlaying = false;
+        const bgMusic = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
+        const startOverlay = document.getElementById('startOverlay');
+
+        // Function to start the experience
+        function startExperience() {
+            startOverlay.classList.add('hidden');
+            playMusic();
+        }
+
+        // Toggle music
+        function toggleMusic() {
+            if (musicPlaying) {
+                pauseMusic();
+            } else {
+                playMusic();
+            }
+        }
+
+        function playMusic() {
+            bgMusic.play().then(() => {
+                musicPlaying = true;
+                musicToggle.textContent = '🔊';
+            }).catch(err => {
+                console.log('Audio play failed:', err);
+                alert('Please click the music button to play the song 🎵');
+            });
+        }
+
+        function pauseMusic() {
+            bgMusic.pause();
+            musicPlaying = false;
+            musicToggle.textContent = '🔇';
+        }
+
+        // Handle NO button clicks
+        const noButton = document.getElementById('noButton');
+        let noClickCount = 0;
+        let messagesFinished = false;
+
+        const messages = [
+            "Are you sure? 🥺",
+            "Sure najud? 😭",
+            "Sure ba? 😢",
+            "Tarung oi 😩",
+            "Promise? 💔",
+            "Sge na please 💕"
+        ];
+
+        function handleNoClick(event) {
+            event.preventDefault();
+
+            if (!messagesFinished) {
+                // Show message
+                document.getElementById('confirmation').style.display = 'block';
+                document.getElementById('confirmation').textContent = messages[noClickCount];
+                
+                noClickCount++;
+
+                // Move button to new position
+                const button = document.getElementById('noButton');
+                button.classList.add('running');
+
+                const maxX = window.innerWidth - button.offsetWidth - 20;
+                const maxY = window.innerHeight - button.offsetHeight - 20;
+                const randomX = Math.random() * maxX;
+                const randomY = Math.random() * maxY;
+
+                button.style.left = randomX + "px";
+                button.style.top = randomY + "px";
+
+                // Check if all messages are done
+                if (noClickCount >= messages.length) {
+                    messagesFinished = true;
+                    document.getElementById('confirmation').textContent = "Bahala ka diko magpadakop! 😌💖";
+                    
+                    // Remove click handler and add hover handler
+                    noButton.onclick = null;
+                    noButton.onmouseover = runAway;
+                    noButton.ontouchstart = runAway;
+                }
+            }
+        }
+
+        function runAway(event) {
+            event.preventDefault();
+
+            const button = document.getElementById('noButton');
+            
+            const maxX = window.innerWidth - button.offsetWidth - 20;
+            const maxY = window.innerHeight - button.offsetHeight - 20;
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+
+            button.style.left = randomX + "px";
+            button.style.top = randomY + "px";
+
+            document.getElementById('confirmation').textContent = "E yes na lagi na! 💖";
+        }
+
+        function sayYes() {
+            document.getElementById('mainButtons').style.display = 'none';
+            document.getElementById('confirmation').style.display = 'none';
+            document.getElementById('celebration').style.display = 'block';
+            document.getElementById('finalMessage').style.display = 'block';
+            document.getElementById('finalMessage').innerHTML = ' Yay! You made me the happiest! 💕<br>Can\'t wait for February 14! 💖';
+            
+            if (!musicPlaying) {
+                playMusic();
+            }
+            
+            setTimeout(showFlowers, 1000);
+        }
+
+        function showFlowers() {
+            const flowersContainer = document.getElementById('flowers');
+            flowersContainer.style.display = 'block';
+            const flowers = ['🌹', '🌺', '💐', '🌷'];
+            
+            flowers.forEach((flower, index) => {
+                setTimeout(() => {
+                    const flowerSpan = document.createElement('span');
+                    flowerSpan.className = 'flower';
+                    flowerSpan.textContent = flower;
+                    flowerSpan.style.animationDelay = (index * 0.1) + 's';
+                    flowersContainer.appendChild(flowerSpan);
+                }, index * 200);
+            });
+        }
+    </script>
+</body>
+</html>
